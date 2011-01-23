@@ -185,7 +185,7 @@ func! toner#unmap()
     if value == ''
       exec "nunmap " . key
     else
-      exec printf("nnoremap % %s", keys, value)
+      exec printf("nnoremap %s %s", key, value)
     endif
   endfor
 endfunc
