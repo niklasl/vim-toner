@@ -1,0 +1,188 @@
+*toner.txt* A tool for toning vim highlight colors
+
+Author: Niklas Lindström <lindstream@gmail.com>
+License: Same terms as Vim (see |license|)
+Version: 0.1.0
+
+
+==============================================================================
+TONER                                                   *toner*
+
+*Toner* is a plugin for interactively and visually toning vim highlight
+colors.
+
+The HSL code is from a vim script by Yukihiro Nakadaira -- see
+|toner-credits|.
+
+(Toner requires Vim 7 compiled with |+float|, and user settings
+'nocompatible', |:syntax| on etc., as might be expected.)
+
+
+------------------------------------------------------------------------------
+INTRODUCTION                                            *toner-intro*
+
+Toner intends to make creating and adjusting colorschemes easy, intuitive and
+enjoyable.
+
+The suggested usage pattern is to load up some code and adjust a current or
+newly made colorscheme interactively.
+
+By mapping the two toner commands |:TonerIncr| (increase) and |:TonerDecr|
+(decrease) to convenient shortcuts (see |:TonerMap|), you can use (e.g.)
++ and - to do the toning.
+
+With the |:Toner| command you adjust which dimension in the HSL space to
+adjust, which part to affect (foreground, background or both), the rate by
+which to adjust, and optionally which highlight group to use (default is group
+under cursor).
+
+
+------------------------------------------------------------------------------
+THE TONER COMMANDS                                      *toner-commands*
+
+                                                        *:Toner*
+:Toner [settings]
+                        Change the group, part, dimension and value which
+                        toner uses to manipulate colors.
+
+                                                        *:Toner!*
+:Toner!                 Restore the default settings.
+
+                                                        *:TonerIncr*
+:TonerIncr              Increment value for current selection.
+
+                                                        *:TonerDecr*
+:TonerDecr              Decrement value for current selection.
+
+                                                        *:TonerSet*
+:TonerSet [gui=none guifg=fg ...]
+                        Just like |:hi|, but use current toner group.
+
+                                                        *:TonerShow*
+:TonerShow              Echo the settings of the group under the cursor.
+
+                                                        *:TonerCopy*
+:TonerCopy              Copy the settings of the group under the cursor.
+
+                                                        *:TonerPaste*
+:TonerPaste             Paste previously copied settings into the group under
+                        the cursor. Will copy the settings to be replaced
+                        unless a '_' is given as argument ('_' is the name of
+                        the regular |quote_| "black hole" vim register).
+
+                                                        *:TonerSave*
+:TonerSave              Create a new window with all group settings. (The
+                        contents can be directly saved as a working
+                        colorscheme.)
+
+                                                        *:TonerMap*
+:TonerMap {incr-key} {decr-key}
+                        Map |:TonerIncr| to {incr-key} and |:TonerDecr| to
+                        {decr-key} (use ! to override eventual existing
+                        mappings). Calling this command with:
+>
+                          :TonerMap + -
+<
+                        is equivalent to doing:
+>
+                          :nnoremap + :TonerIncr<CR>
+                          :nnoremap - :TonerDecr<CR>
+<
+
+                                                        *:TonerUnmap*
+:TonerUnmap             Unmap keys previously bound via |:TonerMap|. (Will
+                        restore eventual overridden mappings.)
+
+
+------------------------------------------------------------------------------
+SETTINGS                                                *toner-settings*
+
+The following values can be given to the |:Toner| command:
+
+.         Pick the color group from the cursor position.
+*         All color groups.
+
+h         The "hue" dimension from the HSL color space.
+s         The "saturation" dimension from the HSL color space.
+l         The "lightness" dimension from the HSL color space.
+
+fg        Tone the foreground (can be combined with "bg").
+bg        Tone the background (can be combined with "fg").
+
+{NUMBER}  The amount/rate by which to manipulate the chosen dimension.
+{GROUP}   Explicitly sets the group to manipulate.
+
+
+------------------------------------------------------------------------------
+EXAMPLES                                                *toner-examples*
+
+Map + and - to |:TonerIncr| and |:TonerDecr| respectively: >
+
+  :TonerMap + -
+
+The default setting is equivalent to doing: >
+
+  :Toner . h fg 2
+
+Use "*" for "all colors". If you invoke: >
+
+  :Toner * fg bg h 4
+
+and hold down "+" for a while the hue of all the colors will rotate in unison.
+
+
+The :Toner command keeps a state, so given the previous, do: >
+
+  :Toner l
+
+to adjust light, and e.g.: >
+
+  :Toner s 10
+
+to adjust saturation with an amount of 10.
+
+To reset the state, invoke: >
+
+  :Toner!
+
+
+To keep and reuse a value, place the cursor upon a highlight and do: >
+
+  :TonerCopy
+
+Then paste it with: >
+
+  :TonerPaste
+
+You can repeat |:TonerPaste| in place to swap the value (like regular text
+paste in visual mode). If you call it with a _ as argument, the current value
+will not be copied: >
+  :TonerPaste _
+
+
+To remove the Toner mappings (and restore eventual previous mappings), do: >
+
+  :TonerUnmap
+
+
+Take a while to get comfortable toggling states using |:Toner| and
+incrementing/decrementing different values.
+
+Enjoy!
+
+
+------------------------------------------------------------------------------
+CREDITS                                                 *toner-credits*
+
+All the HSL work, including the hue rotation, is taken from huerotation.vim
+(Vim Script #2283) by Yukihiro Nakadaira.
+
+That code is placed in the public domain, and this part of Toner still goes
+under those terms. See <http://www.vim.org/scripts/script.php?script_id=2283>
+for the original HUE code.
+
+Without this, Toner would probably still be just another vague idea of mine!
+
+
+==============================================================================
+ vim:tw=78:fo=tcq2:ts=8:ft=help:norl:
